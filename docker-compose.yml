@@ -1,0 +1,249 @@
+# 🌱 Smart Irrigation System - Docker Compose
+# Architecture microservices complète avec tous les services
+
+version: '3.8'
+
+services:
+  # =============================================================================
+  # 🐘 BASE DE DONNÉES POSTGRESQL
+  # =============================================================================
+  postgres:
+    image: postgres:15-alpine
+    container_name: irrigation_postgres
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-irrigation_db}
+      POSTGRES_USER: ${POSTGRES_USER:-irrigation_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-secure_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/01-init.sql
+      - ./database/seed_data.sql:/docker-entrypoint-initdb.d/02-seed.sql
+    ports:
+      - "5432:5432"
+    networks:
+      - irrigation_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-irrigation_user} -d ${POSTGRES_DB:-irrigation_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # =============================================================================
+  # 🔄 REDIS CACHE & SESSIONS
+  # =============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: irrigation_redis
+    command: redis-server --requirepass ${REDIS_PASSWORD:-redis_password}
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - irrigation_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # =============================================================================
+  # 📡 MOSQUITTO MQTT BROKER
+  # =============================================================================
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    container_name: irrigation_mosquitto
+    volumes:
+      - ./config/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - ./config/mosquitto_passwd:/mosquitto/config/passwd
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_logs:/mosquitto/log
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    networks:
+      - irrigation_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_pub -h localhost -t health/check -m 'health_check' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # =============================================================================
+  # 🚀 BACKEND FASTAPI
+  # =============================================================================
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: irrigation_backend
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-irrigation_user}:${POSTGRES_PASSWORD:-secure_password}@postgres:5432/${POSTGRES_DB:-irrigation_db}
+      - REDIS_URL=redis://redis:6379/0
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+      - SECRET_KEY=${SECRET_KEY:-your-secret-key}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+    volumes:
+      - ./backend:/app
+      - ./logs:/app/logs
+    ports:
+      - "8000:8000"
+    networks:
+      - irrigation_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mosquitto:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # =============================================================================
+  # 🖥️ FRONTEND REACT
+  # =============================================================================
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_API_URL=http://localhost:8000
+        - REACT_APP_WS_URL=ws://localhost:8000
+    container_name: irrigation_frontend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    networks:
+      - irrigation_network
+    depends_on:
+      - backend
+    restart: unless-stopped
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_WS_URL=ws://localhost:8000
+
+  # =============================================================================
+  # 📡 IOT BRIDGE SERVICE
+  # =============================================================================
+  iot-bridge:
+    build:
+      context: ./iot-bridge
+      dockerfile: Dockerfile
+    container_name: irrigation_iot_bridge
+    environment:
+      - MQTT_BROKER=mosquitto
+      - MQTT_PORT=1883
+      - MQTT_USERNAME=${MQTT_USERNAME:-irrigation_mqtt}
+      - MQTT_PASSWORD=${MQTT_PASSWORD:-mqtt_password}
+      - BACKEND_URL=http://backend:8000
+      - REDIS_URL=redis://redis:6379/1
+    volumes:
+      - ./iot-bridge:/app
+      - ./logs:/app/logs
+    networks:
+      - irrigation_network
+    depends_on:
+      - mosquitto
+      - backend
+      - redis
+    restart: unless-stopped
+
+  # =============================================================================
+  # 🔄 NGINX REVERSE PROXY
+  # =============================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: irrigation_nginx
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./ssl:/etc/nginx/ssl  # Pour HTTPS en production
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - irrigation_network
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+
+  # =============================================================================
+  # 📊 MONITORING (Optionnel)
+  # =============================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: irrigation_prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - irrigation_network
+    profiles:
+      - monitoring
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: irrigation_grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASSWORD:-admin}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
+    ports:
+      - "3001:3000"
+    networks:
+      - irrigation_network
+    depends_on:
+      - prometheus
+    profiles:
+      - monitoring
+    restart: unless-stopped
+
+# =============================================================================
+# 📂 VOLUMES PERSISTANTS
+# =============================================================================
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  mosquitto_data:
+    driver: local
+  mosquitto_logs:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+# =============================================================================
+# 🌐 NETWORK
+# =============================================================================
+networks:
+  irrigation_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

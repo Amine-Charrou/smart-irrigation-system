@@ -1,0 +1,401 @@
+# 🌱 Smart Irrigation System - Git Ignore
+# Fichiers et dossiers à exclure du versioning
+
+# =============================================================================
+# 🔐 SÉCURITÉ & CONFIGURATION
+# =============================================================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+config/local.json
+config/production.json
+*.pem
+*.key
+*.crt
+*.csr
+ssl/
+secrets/
+
+# =============================================================================
+# 🐍 PYTHON
+# =============================================================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+PIPFILE.lock
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+.venv/
+
+# Python testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+Pipfile.lock
+
+# PEP 582
+__pypackages__/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath parsed files
+*.sage.py
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Pyre type checker
+.pyre/
+
+# pytype static type analyzer
+.pytype/
+
+# Cython debug symbols
+cython_debug/
+
+# PyCharm
+.idea/
+
+# =============================================================================
+# 📦 NODE.JS & REACT
+# =============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Grunt intermediate storage
+.grunt
+
+# Bower dependency directory
+bower_components
+
+# node-waf configuration
+.lock-wscript
+
+# Compiled binary addons
+build/Release
+
+# Dependency directories
+jspm_packages/
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# dotenv environment variables file
+.env
+.env.test
+.env.production
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+out
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache/
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+storybook-static
+
+# Temporary folders
+tmp/
+temp/
+
+# =============================================================================
+# 🗄️ BASES DE DONNÉES
+# =============================================================================
+*.db
+*.sqlite
+*.sqlite3
+data/*.db
+data/*.sqlite
+backups/
+
+# PostgreSQL
+*.dump
+*.sql.gz
+
+# =============================================================================
+# 📊 LOGS & MONITORING
+# =============================================================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =============================================================================
+# 📁 UPLOADS & FICHIERS UTILISATEUR
+# =============================================================================
+uploads/
+static/uploads/
+media/
+
+# =============================================================================
+# 🧪 TESTS
+# =============================================================================
+tests/coverage/
+tests/reports/
+jest_reports/
+.jest-cache/
+
+# =============================================================================
+# 📚 DOCUMENTATION
+# =============================================================================
+docs/_build/
+docs/.doctrees/
+
+# =============================================================================
+# 🛠️ OUTILS DE DÉVELOPPEMENT
+# =============================================================================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Vim
+*.swp
+*.swo
+*.un~
+Session.vim
+.netrwhist
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+
+# =============================================================================
+# 🐳 DOCKER
+# =============================================================================
+.dockerignore
+Dockerfile.dev
+docker-compose.override.yml
+docker-compose.local.yml
+
+# Volumes Docker
+postgres_data/
+redis_data/
+mosquitto_data/
+mosquitto_logs/
+prometheus_data/
+grafana_data/
+
+# =============================================================================
+# ☁️ CLOUD & DÉPLOIEMENT
+# =============================================================================
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# AWS
+.aws/
+
+# Google Cloud
+.gcloud/
+
+# Azure
+.azure/
+
+# Kubernetes
+kustomization.yaml
+
+# Helm
+*.tgz
+charts/
+
+# =============================================================================
+# 📱 MOBILE (React Native - Future)
+# =============================================================================
+# Expo
+.expo/
+dist/
+npm-debug.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+web-build/
+
+# macOS
+.DS_Store
+
+# =============================================================================
+# 🔄 CI/CD
+# =============================================================================
+.github/workflows/secrets.yml
+.gitlab-ci.local.yml
+
+# =============================================================================
+# 📈 MONITORING
+# =============================================================================
+monitoring/data/
+prometheus_data/
+grafana_data/
+
+# =============================================================================
+# 🌍 INTERNATIONALISATION
+# =============================================================================
+# Ignore compiled translations
+*.mo
+*.pot
+
+# =============================================================================
+# 📋 DIVERS
+# =============================================================================
+.sass-cache/
+.connect.lock
+.electron/
+.eslintcache
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.tmp

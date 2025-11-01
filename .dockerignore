@@ -1,0 +1,253 @@
+# 🌱 Smart Irrigation System - Docker Ignore
+# Optimisation build Docker
+
+# =============================================================================
+# 🗂️ FICHIERS SYSTÈME
+# =============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# =============================================================================
+# 🔧 DÉVELOPPEMENT
+# =============================================================================
+.git
+.gitignore
+.gitattributes
+.github
+README.md
+CHANGELOG.md
+LICENSE
+.editorconfig
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# =============================================================================
+# 🐍 PYTHON
+# =============================================================================
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+build
+develop-eggs
+dist
+downloads
+eggs
+.eggs
+lib
+lib64
+parts
+sdist
+var
+wheels
+share/python-wheels
+*.egg-info
+.installed.cfg
+*.egg
+PIPFILE.lock
+
+# Virtual environments
+venv
+env
+ENV
+env.bak
+venv.bak
+.venv
+.env
+
+# Python cache
+.pytest_cache
+.coverage
+htmlcov
+.tox
+.nox
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis
+
+# =============================================================================
+# 📦 NODE.JS
+# =============================================================================
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+*.lcov
+
+# nyc test coverage
+.nyc_output
+
+# Dependency directories
+jspm_packages
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache
+.rts2_cache_cjs
+.rts2_cache_es
+.rts2_cache_umd
+
+# Optional REPL history
+.node_repl_history
+
+# Output of 'npm pack'
+*.tgz
+
+# Yarn Integrity file
+.yarn-integrity
+
+# parcel-bundler cache
+.cache
+.parcel-cache
+
+# Next.js build output
+.next
+out
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+
+# Gatsby files
+.cache
+public
+
+# Storybook build outputs
+.out
+.storybook-out
+storybook-static
+
+# Temporary folders
+tmp
+temp
+
+# =============================================================================
+# 🗄️ BASES DE DONNÉES
+# =============================================================================
+*.db
+*.sqlite
+*.sqlite3
+
+# =============================================================================
+# 📊 LOGS & MONITORING
+# =============================================================================
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =============================================================================
+# ⚙️ CONFIGURATION LOCALE
+# =============================================================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+config/local.json
+config/production.json
+
+# =============================================================================
+# 🔐 SÉCURITÉ
+# =============================================================================
+*.pem
+*.key
+*.crt
+*.csr
+ssl/
+secrets/
+
+# =============================================================================
+# 🧪 TESTS
+# =============================================================================
+tests/__pycache__
+tests/coverage
+tests/reports
+jest_reports
+
+# =============================================================================
+# 📁 UPLOADS & DATA
+# =============================================================================
+uploads/
+data/
+!data/seed_data.sql
+backups/
+
+# =============================================================================
+# 📚 DOCUMENTATION
+# =============================================================================
+docs/_build
+docs/.doctrees
+
+# =============================================================================
+# 🐳 DOCKER
+# =============================================================================
+.dockerignore
+Dockerfile.dev
+docker-compose.override.yml
+docker-compose.local.yml
+
+# =============================================================================
+# ☁️ CLOUD & DÉPLOIEMENT
+# =============================================================================
+.terraform
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+
+# Kubernetes
+kustomization.yaml
+
+# Helm
+*.tgz
+
+# =============================================================================
+# 📈 MONITORING (Fichiers volumineux)
+# =============================================================================
+prometheus_data/
+grafana_data/
+monitoring/data/
+
+# =============================================================================
+# 🔄 CI/CD
+# =============================================================================
+.github/
+.gitlab-ci.yml
+Jenkinsfile
+.circleci/
+.travis.yml
